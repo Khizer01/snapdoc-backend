@@ -13,12 +13,12 @@ router.put('/', requireAuth, async (req: AuthRequest, res: Response) => {
     return;
   }
 
-  const updateData: Record<string, string> = {
+  const updateData: Record<string, string | null> = {
     first_name,
     last_name,
     full_name: `${first_name} ${last_name}`,
+    avatar_url: avatar_url || null,
   };
-  if (avatar_url) updateData.avatar_url = avatar_url;
 
   const { data, error } = await supabase.auth.admin.updateUserById(
     req.userId!,

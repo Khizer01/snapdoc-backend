@@ -15,6 +15,7 @@ jest.mock('../services/supabase', () => ({
       select: jest.fn().mockReturnThis(),
       insert: jest.fn().mockReturnThis(),
       eq: jest.fn().mockReturnThis(),
+      is: jest.fn().mockReturnThis(),
       order: jest.fn().mockResolvedValue({ data: [], error: null }),
       single: jest.fn().mockResolvedValue({ data: null, error: { message: 'not found' } }),
     }),
