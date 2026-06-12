@@ -23,6 +23,7 @@ router.post('/', requireAuth, async (req: AuthRequest, res: Response) => {
         raw_text: geminiResult.raw_text,
         ai_summary: geminiResult.summary,
         document_type: geminiResult.document_type,
+        title: geminiResult.title,
         key_points: geminiResult.key_points,
         flags: geminiResult.flags,
       })
