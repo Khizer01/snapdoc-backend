@@ -1,0 +1,15 @@
+node_modules
+dist
+.env
+.env*
+!.env.example
+.git
+.gitignore
+.DS_Store
+.vercel
+*.tsbuildinfo
+npm-debug.*
+README.md
+jest.config.js
+jest.setup.js
+src/__tests__
