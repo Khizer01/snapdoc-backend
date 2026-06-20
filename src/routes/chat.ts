@@ -20,7 +20,7 @@ router.post('/', requireAuth, async (req: AuthRequest, res: Response) => {
 
   const { data: scan, error: scanError } = await supabase
     .from('scans')
-    .select('raw_text, user_id')
+    .select('raw_text, visual_context, user_id')
     .eq('id', scan_id)
     .eq('user_id', req.userId!)
     .single();
@@ -33,6 +33,7 @@ router.post('/', requireAuth, async (req: AuthRequest, res: Response) => {
   try {
     const reply = await chatWithDocument(
       scan.raw_text ?? '',
+      scan.visual_context ?? '',
       message,
       history ?? []
     );

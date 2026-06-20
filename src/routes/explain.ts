@@ -26,6 +26,7 @@ router.post('/', requireAuth, async (req: AuthRequest, res: Response) => {
         title: geminiResult.title,
         key_points: geminiResult.key_points,
         flags: geminiResult.flags,
+        visual_context: geminiResult.visual_context,
       })
       .select()
       .single();
