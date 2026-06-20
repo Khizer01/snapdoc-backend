@@ -20,6 +20,10 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      # Step C: The Ultimate Test - Does our Dockerfile actually compile?
+      # Step C: Run Tests
+      - name: Run Tests
+        run: npm test
+
+      # Step D: The Ultimate Test - Does our Dockerfile actually compile?
       - name: Test Docker Build
         run: docker build -t test-api-image .
