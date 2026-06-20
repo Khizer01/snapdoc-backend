@@ -29,7 +29,8 @@ Analyse this document image and respond ONLY with valid JSON in this exact forma
   "summary": "2-3 sentence plain-language summary of what this document is and what it means for the recipient",
   "document_type": "one of: contract, bill, form, letter, receipt, medical, legal, other",
   "key_points": ["bullet point 1", "bullet point 2", "bullet point 3"],
-  "flags": ["any important deadline or required action — omit this key if none"]
+  "flags": ["any important deadline or required action — omit this key if none"],
+  "visual_context": "describe anything visual that is NOT already captured in raw_text and that someone might later ask about: stamps, signatures, logos, photos or diagrams, checkboxes/tick marks and their state, table layout, handwriting, colors, condition of the document, etc. Empty string if there is nothing notable beyond the text."
 }
 
 Rules:
@@ -37,6 +38,7 @@ Rules:
 - title: 3-7 words, specific to this document's content
 - key_points: exactly 3-5 items
 - flags: only real deadlines, payment due dates, or required actions — empty array if none
+- visual_context: this is the only record kept of the image after this call, so be thorough about anything non-textual a follow-up question might reasonably ask about
 - Respond with JSON only, no markdown fences, no extra text`;
 
   let lastError: Error = new Error('All Gemini models are currently rate-limited. Please try again in a minute.');
@@ -80,6 +82,7 @@ Rules:
         document_type: parsed.document_type ?? 'other',
         key_points: Array.isArray(parsed.key_points) ? parsed.key_points : [],
         flags: Array.isArray(parsed.flags) ? parsed.flags : [],
+        visual_context: parsed.visual_context ?? '',
       };
     } catch {
       throw new Error(`Gemini returned invalid JSON: ${text.substring(0, 200)}`);
@@ -91,6 +94,7 @@ Rules:
 
 export async function chatWithDocument(
   rawText: string,
+  visualContext: string,
   userMessage: string,
   history: ChatMessage[]
 ): Promise<string> {
@@ -99,7 +103,7 @@ export async function chatWithDocument(
 ---
 ${rawText}
 ---
-
+${visualContext ? `\nAdditional visual details from the original photo (stamps, signatures, layout, etc.):\n${visualContext}\n` : ''}
 Answer their questions about this document simply, clearly, and concisely. If the answer isn't in the document, say so honestly.`;
 
   const historyText = history

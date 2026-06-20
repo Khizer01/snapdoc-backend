@@ -11,6 +11,7 @@ export interface ExplainResult {
   key_points: string[];
   flags: string[];
   raw_text: string;
+  visual_context: string;
 }
 
 export interface ChatMessage {
