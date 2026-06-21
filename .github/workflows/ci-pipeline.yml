@@ -1,8 +1,10 @@
 name: Node.js CI Pipeline
 
-# 1. THE TRIGGER: When should this pipeline run?
+# 1. THE TRIGGER: run on every push to main, and on every PR targeting main
 on:
   push:
+    branches: [ "main" ]
+  pull_request:
     branches: [ "main" ]
 
 # 2. THE RUNNER: GitHub provisions a free, temporary Linux server for us
@@ -16,14 +18,25 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # Step B: Prove the Node.js dependencies can be installed
+      # Step B: Install the Node.js version our app runs on
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # Step C: Install dependencies exactly as locked in package-lock.json
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
 
-      # Step C: Run Tests
+      # Step D: Catch type errors before running tests
+      - name: Type Check
+        run: npm run typecheck
+
+      # Step E: Run tests and enforce the coverage threshold
       - name: Run Tests
-        run: npm test
+        run: npm run test:coverage
 
-      # Step D: The Ultimate Test - Does our Dockerfile actually compile?
+      # Step F: The Ultimate Test - Does our Dockerfile actually compile?
       - name: Test Docker Build
         run: docker build -t test-api-image .
